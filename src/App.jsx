@@ -109,15 +109,13 @@ const App = () => {
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
-        {(trendingMovies.length > 0 || trendingErrorMessage) && (
-          <section className="trending">
-            <h2>Trending Movies</h2>
+        <section className="trending">
+          <h2>Trending Movies</h2>
 
-            {trendingErrorMessage && (
-              <p className="text-red-500 my-4">{trendingErrorMessage}</p>
-            )}
-
-            {trendingMovies.length > 0 && (
+          {trendingErrorMessage ? (
+            <p className="my-9 text-red-500">{trendingErrorMessage}</p>
+          ) : (
+            trendingMovies.length > 0 && (
               <ul>
                 {trendingMovies.map((movie, index) => (
                   <li key={movie.$id}>
@@ -126,9 +124,9 @@ const App = () => {
                   </li>
                 ))}
               </ul>
-            )}
-          </section>
-        )}
+            )
+          )}
+        </section>
 
         <section className="all-movies">
           <h2>All Movies</h2>
@@ -136,7 +134,7 @@ const App = () => {
           {isLoading ? (
             <Spinner />
           ) : errorMessage ? (
-            <p className="text-red-500 my-4">{errorMessage}</p>
+            <p className="my-9 text-red-500">{errorMessage}</p>
           ) : (
             <ul>
               {movieList.map((movie) => (
