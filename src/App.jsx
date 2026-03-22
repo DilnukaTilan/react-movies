@@ -25,6 +25,7 @@ const App = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [trendingErrorMessage, setTrendingErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Debounce the search term to avoid excessive API requests by waiting for the user to stop typing for 1000ms.
@@ -67,12 +68,22 @@ const App = () => {
   };
 
   const fetchTrendingMovies = async () => {
+    setTrendingErrorMessage("");
+
     try {
       const movies = await getTrendingMovies();
+
+      if (!Array.isArray(movies)) {
+        throw new Error("Failed to fetch trending movies.");
+      }
 
       setTrendingMovies(movies || []);
     } catch (error) {
       console.error("Error fetching trending movies:", error);
+      setTrendingErrorMessage(
+        "Failed to fetch trending movies. Please try again later.",
+      );
+      setTrendingMovies([]);
     }
   };
 
@@ -98,18 +109,24 @@ const App = () => {
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
-        {trendingMovies.length > 0 && (
+        {(trendingMovies.length > 0 || trendingErrorMessage) && (
           <section className="trending">
             <h2>Trending Movies</h2>
 
-            <ul>
-              {trendingMovies.map((movie, index) => (
-                <li key={movie.$id}>
-                  <p>{index + 1}</p>
-                  <img src={movie.poster_url} alt={movie.title} />
-                </li>
-              ))}
-            </ul>
+            {trendingErrorMessage && (
+              <p className="text-red-500 my-4">{trendingErrorMessage}</p>
+            )}
+
+            {trendingMovies.length > 0 && (
+              <ul>
+                {trendingMovies.map((movie, index) => (
+                  <li key={movie.$id}>
+                    <p>{index + 1}</p>
+                    <img src={movie.poster_url} alt={movie.title} />
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
 
@@ -119,7 +136,7 @@ const App = () => {
           {isLoading ? (
             <Spinner />
           ) : errorMessage ? (
-            <p className="text-red-500">{errorMessage}</p>
+            <p className="text-red-500 my-4">{errorMessage}</p>
           ) : (
             <ul>
               {movieList.map((movie) => (
