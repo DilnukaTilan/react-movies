@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
@@ -28,10 +28,9 @@ const App = () => {
   const [trendingErrorMessage, setTrendingErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Debounce the search term to avoid excessive API requests by waiting for the user to stop typing for 1000ms.
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 1000, [searchTerm]);
 
-  const fetchMovies = async (query = "") => {
+  const fetchMovies = useCallback(async (query = "", signal) => {
     setIsLoading(true);
     setErrorMessage("");
 
@@ -39,7 +38,7 @@ const App = () => {
       const endpoint = query
         ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
         : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
-      const response = await fetch(endpoint, API_OPTIONS);
+      const response = await fetch(endpoint, { ...API_OPTIONS, signal });
 
       if (!response.ok) {
         throw new Error("Failed to fetch movies!");
@@ -47,25 +46,19 @@ const App = () => {
 
       const data = await response.json();
 
-      if (data.Response === "False") {
-        setErrorMessage(
-          data.Error || "An error occurred while fetching movies.",
-        );
-        setMovieList([]);
-        return;
-      }
       setMovieList(data.results || []);
 
       if (query && data.results.length > 0) {
-        await updateSearchCount(query, data.results[0]);
+        updateSearchCount(query, data.results[0]);
       }
     } catch (error) {
+      if (error.name === "AbortError") return;
       console.error("Error fetching movies:", error);
       setErrorMessage("Failed to fetch movies. Please try again later.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const fetchTrendingMovies = async () => {
     setTrendingErrorMessage("");
@@ -88,8 +81,11 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies(debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
+    const controller = new AbortController();
+    fetchMovies(debouncedSearchTerm, controller.signal);
+
+    return () => controller.abort();
+  }, [debouncedSearchTerm, fetchMovies]);
 
   useEffect(() => {
     fetchTrendingMovies();
@@ -135,6 +131,8 @@ const App = () => {
             <Spinner />
           ) : errorMessage ? (
             <p className="my-9 text-red-500">{errorMessage}</p>
+          ) : movieList.length === 0 ? (
+            <p className="text-white">No movies found.</p>
           ) : (
             <ul>
               {movieList.map((movie) => (
