@@ -138,7 +138,7 @@ const MovieDetails = ({ movie, onBack }) => {
           </div>
 
           <dl>
-            <div>
+            <div className="detail-row">
               <dt>Genres</dt>
               <dd>
                 <div className="detail-pills">
@@ -152,15 +152,15 @@ const MovieDetails = ({ movie, onBack }) => {
                 </div>
               </dd>
             </div>
-            <div>
+            <div className="detail-row">
               <dt>Production companies</dt>
               <dd>{productionCompanies}</dd>
             </div>
-            <div>
+            <div className="detail-row">
               <dt>Production countries</dt>
               <dd>{countries}</dd>
             </div>
-            <div>
+            <div className="detail-row">
               <dt>Homepage</dt>
               <dd>
                 {movie.homepage ? (
