@@ -171,7 +171,7 @@
   }
 
   .details-poster {
-    @apply aspect-[2/3] w-full max-w-[280px] rounded-xl object-cover shadow-2xl shadow-primary/70 md:max-w-none;
+    @apply aspect-[2/3] w-full max-w-[280px] mx-auto md:mx-0 rounded-xl object-cover shadow-2xl shadow-primary/70 md:max-w-none;
   }
 
   .details-copy {
