@@ -95,34 +95,56 @@ const MovieDetails = ({ movie, onBack }) => {
       </div>
 
       <div className="details-grid">
+        {/* ── Movie Details panel ── */}
         <div className="detail-panel">
           <div className="panel-header">
             <span className="panel-icon">🎬</span>
             <h2>Movie Details</h2>
           </div>
+
+          {/* Rating highlight card */}
+          {movie.vote_average > 0 && (
+            <div className="rating-highlight">
+              <span className="rating-star">★</span>
+              <span className="rating-score">
+                {movie.vote_average.toFixed(1)}
+              </span>
+              <span className="rating-max">/ 10</span>
+              {movie.vote_count > 0 && (
+                <span className="rating-votes">
+                  ({movie.vote_count.toLocaleString("en-US")} votes)
+                </span>
+              )}
+            </div>
+          )}
+
           <dl>
-            {detailItems(movie).map(([label, value]) => (
-              <div key={label} className="detail-row">
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
+            {detailItems(movie)
+              .filter(([label]) => label !== "Rating" && label !== "Votes")
+              .map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
           </dl>
         </div>
 
+        {/* ── Production panel ── */}
         <div className="detail-panel">
           <div className="panel-header">
-            <span className="panel-icon">🎞️</span>
+            <span className="panel-icon">🏢</span>
             <h2>Production</h2>
           </div>
+
           <dl>
             <div className="detail-row">
               <dt>Genres</dt>
               <dd>
-                <div className="detail-tags">
+                <div className="detail-pills">
                   {movie.genres?.length
                     ? movie.genres.map((g) => (
-                        <span key={g.id} className="detail-tag">
+                        <span key={g.id} className="detail-pill">
                           {g.name}
                         </span>
                       ))
@@ -143,25 +165,13 @@ const MovieDetails = ({ movie, onBack }) => {
               <dd>
                 {movie.homepage ? (
                   <a
+                    className="homepage-link"
                     href={movie.homepage}
                     target="_blank"
                     rel="noreferrer"
-                    className="homepage-link"
                   >
                     <span>Visit official site</span>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M7 17L17 7" />
-                      <path d="M7 7h10v10" />
-                    </svg>
+                    <span className="link-arrow">→</span>
                   </a>
                 ) : (
                   "N/A"
