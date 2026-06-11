@@ -102,7 +102,7 @@
   }
 
   .movie-card {
-    @apply bg-dark-100 p-5 rounded-2xl shadow-inner shadow-light-100/10;
+    @apply block bg-dark-100 p-5 rounded-2xl shadow-inner shadow-light-100/10 transition duration-200 hover:-translate-y-1 hover:shadow-light-100/20 focus:outline-none focus:ring-2 focus:ring-light-100/50;
 
     & img {
       @apply rounded-lg h-auto w-full;
@@ -139,6 +139,91 @@
     & .content .year {
       @apply text-gray-100 font-medium text-base;
     }
+  }
+
+  .details-state {
+    @apply pt-6;
+  }
+
+  .back-button {
+    @apply mb-8 w-fit rounded-lg bg-light-100/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-light-100/20 focus:outline-none focus:ring-2 focus:ring-light-100/50;
+  }
+
+  .movie-details {
+    @apply pt-4;
+  }
+
+  .details-hero {
+    @apply relative overflow-hidden rounded-2xl bg-cover bg-center shadow-inner shadow-light-100/10;
+  }
+
+  .details-hero::before {
+    content: "";
+    @apply absolute inset-0 bg-primary/80 backdrop-blur-[2px];
+  }
+
+  .details-hero-content {
+    @apply relative z-10 grid gap-8 p-5 sm:p-8 md:grid-cols-[260px_1fr] md:items-end lg:grid-cols-[320px_1fr] lg:p-10;
+  }
+
+  .details-poster {
+    @apply aspect-[2/3] w-full max-w-[280px] rounded-xl object-cover shadow-2xl shadow-primary/70 md:max-w-none;
+  }
+
+  .details-copy {
+    @apply max-w-3xl;
+  }
+
+  .details-copy .eyebrow {
+    @apply mb-3 text-sm font-bold uppercase tracking-[0.2em] text-light-200;
+  }
+
+  .details-copy h1 {
+    @apply mx-0 max-w-none text-left text-4xl sm:text-5xl sm:leading-tight;
+  }
+
+  .details-copy .tagline {
+    @apply mt-4 text-xl font-semibold text-light-100;
+  }
+
+  .details-copy .overview {
+    @apply mt-5 text-base leading-7 text-light-200 sm:text-lg;
+  }
+
+  .genre-list {
+    @apply mt-6 flex flex-wrap gap-2;
+  }
+
+  .genre-list span {
+    @apply rounded-full bg-light-100/10 px-3 py-1 text-sm font-semibold text-light-100;
+  }
+
+  .details-grid {
+    @apply mt-8 grid gap-5 lg:grid-cols-2;
+  }
+
+  .detail-panel {
+    @apply rounded-2xl bg-dark-100 p-5 shadow-inner shadow-light-100/10 sm:p-6;
+  }
+
+  .detail-panel dl {
+    @apply mt-5 space-y-4;
+  }
+
+  .detail-panel dl div {
+    @apply border-b border-light-100/10 pb-4 last:border-b-0 last:pb-0;
+  }
+
+  .detail-panel dt {
+    @apply text-sm font-bold uppercase tracking-[0.16em] text-gray-100;
+  }
+
+  .detail-panel dd {
+    @apply mt-1 text-base font-semibold text-white;
+  }
+
+  .detail-panel a {
+    @apply text-light-100 underline decoration-light-100/40 underline-offset-4 hover:text-white;
   }
 }
 
