@@ -53,7 +53,6 @@ const MovieDetails = ({ movie, onBack }) => {
   const poster = movie.poster_path
     ? `${IMAGE_BASE_URL}/w500${movie.poster_path}`
     : "/no-movie.png";
-  const genres = movie.genres?.map((genre) => genre.name).join(", ") || "N/A";
   const productionCompanies =
     movie.production_companies?.map((company) => company.name).join(", ") ||
     "N/A";
@@ -97,10 +96,13 @@ const MovieDetails = ({ movie, onBack }) => {
 
       <div className="details-grid">
         <div className="detail-panel">
-          <h2>Movie Details</h2>
+          <div className="panel-header">
+            <span className="panel-icon">🎬</span>
+            <h2>Movie Details</h2>
+          </div>
           <dl>
             {detailItems(movie).map(([label, value]) => (
-              <div key={label}>
+              <div key={label} className="detail-row">
                 <dt>{label}</dt>
                 <dd>{value}</dd>
               </div>
@@ -109,26 +111,57 @@ const MovieDetails = ({ movie, onBack }) => {
         </div>
 
         <div className="detail-panel">
-          <h2>Production</h2>
+          <div className="panel-header">
+            <span className="panel-icon">🎞️</span>
+            <h2>Production</h2>
+          </div>
           <dl>
-            <div>
+            <div className="detail-row">
               <dt>Genres</dt>
-              <dd>{genres}</dd>
+              <dd>
+                <div className="detail-tags">
+                  {movie.genres?.length
+                    ? movie.genres.map((g) => (
+                        <span key={g.id} className="detail-tag">
+                          {g.name}
+                        </span>
+                      ))
+                    : "N/A"}
+                </div>
+              </dd>
             </div>
-            <div>
+            <div className="detail-row">
               <dt>Production companies</dt>
               <dd>{productionCompanies}</dd>
             </div>
-            <div>
+            <div className="detail-row">
               <dt>Production countries</dt>
               <dd>{countries}</dd>
             </div>
-            <div>
+            <div className="detail-row">
               <dt>Homepage</dt>
               <dd>
                 {movie.homepage ? (
-                  <a href={movie.homepage} target="_blank" rel="noreferrer">
-                    Visit official site
+                  <a
+                    href={movie.homepage}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="homepage-link"
+                  >
+                    <span>Visit official site</span>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M7 17L17 7" />
+                      <path d="M7 7h10v10" />
+                    </svg>
                   </a>
                 ) : (
                   "N/A"
