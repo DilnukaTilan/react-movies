@@ -130,7 +130,7 @@ const MovieDetails = ({ movie, onBack }) => {
 
         <div className="detail-panel">
           <div className="panel-header">
-            <span className="panel-icon">🏢</span>
+            <span className="panel-icon">📽️</span>
             <h2>Production</h2>
           </div>
 

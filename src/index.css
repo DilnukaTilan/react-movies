@@ -89,7 +89,11 @@
     }
 
     & input {
-      @apply w-full bg-transparent py-2 sm:pr-10 pl-10 text-base text-gray-200 placeholder-light-200 outline-hidden;
+      @apply w-full min-w-0 bg-transparent py-2 pl-10 pr-4 text-base text-gray-200 placeholder-light-200 outline-hidden;
+    }
+
+    & button {
+      @apply shrink-0 rounded-lg bg-light-100/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-light-100/20 focus:outline-none focus:ring-2 focus:ring-light-100/50 cursor-pointer;
     }
   }
 

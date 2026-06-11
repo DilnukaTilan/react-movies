@@ -1,6 +1,23 @@
-const Search = ({ searchTerm, setSearchTerm }) => {
+const Search = ({
+  searchTerm,
+  setSearchTerm,
+  onSubmit,
+  onClear,
+  isSearchActive,
+}) => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (isSearchActive) {
+      onClear();
+      return;
+    }
+
+    onSubmit();
+  };
+
   return (
-    <div className="search">
+    <form className="search" onSubmit={handleSubmit}>
       <div>
         <img src="/search.svg" alt="search" />
         <input
@@ -9,8 +26,9 @@ const Search = ({ searchTerm, setSearchTerm }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button type="submit">{isSearchActive ? "Clear" : "Search"}</button>
       </div>
-    </div>
+    </form>
   );
 };
 

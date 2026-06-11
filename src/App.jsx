@@ -3,7 +3,6 @@ import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
 import MovieDetails from "./components/MovieDetails";
-import { useDebounce } from "react-use";
 import { updateSearchCount, getTrendingMovies } from "./appwrite";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
@@ -25,7 +24,7 @@ const getMovieIdFromPath = () => {
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
   const [selectedMovieId, setSelectedMovieId] = useState(getMovieIdFromPath);
 
   const [movieList, setMovieList] = useState([]);
@@ -37,8 +36,6 @@ const App = () => {
   const [detailsErrorMessage, setDetailsErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
-
-  useDebounce(() => setDebouncedSearchTerm(searchTerm), 1000, [searchTerm]);
 
   const fetchMovies = useCallback(async (query = "", signal) => {
     setIsLoading(true);
@@ -128,6 +125,15 @@ const App = () => {
     setSelectedMovieId(null);
   };
 
+  const handleSearchSubmit = () => {
+    setSubmittedSearchTerm(searchTerm.trim());
+  };
+
+  const handleSearchClear = () => {
+    setSearchTerm("");
+    setSubmittedSearchTerm("");
+  };
+
   useEffect(() => {
     const handlePopState = () => setSelectedMovieId(getMovieIdFromPath());
 
@@ -140,10 +146,10 @@ const App = () => {
     if (selectedMovieId) return;
 
     const controller = new AbortController();
-    fetchMovies(debouncedSearchTerm, controller.signal);
+    fetchMovies(submittedSearchTerm, controller.signal);
 
     return () => controller.abort();
-  }, [debouncedSearchTerm, fetchMovies, selectedMovieId]);
+  }, [submittedSearchTerm, fetchMovies, selectedMovieId]);
 
   useEffect(() => {
     if (!selectedMovieId) {
@@ -196,7 +202,16 @@ const App = () => {
                 Without the Hassle
               </h1>
 
-              <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+              <Search
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                onSubmit={handleSearchSubmit}
+                onClear={handleSearchClear}
+                isSearchActive={
+                  submittedSearchTerm.length > 0 &&
+                  searchTerm.trim() === submittedSearchTerm
+                }
+              />
             </header>
 
             <section className="trending">
