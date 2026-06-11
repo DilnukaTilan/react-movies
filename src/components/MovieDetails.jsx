@@ -95,14 +95,12 @@ const MovieDetails = ({ movie, onBack }) => {
       </div>
 
       <div className="details-grid">
-        {/* ── Movie Details panel ── */}
         <div className="detail-panel">
           <div className="panel-header">
             <span className="panel-icon">🎬</span>
             <h2>Movie Details</h2>
           </div>
 
-          {/* Rating highlight card */}
           {movie.vote_average > 0 && (
             <div className="rating-highlight">
               <span className="rating-star">★</span>
@@ -130,7 +128,6 @@ const MovieDetails = ({ movie, onBack }) => {
           </dl>
         </div>
 
-        {/* ── Production panel ── */}
         <div className="detail-panel">
           <div className="panel-header">
             <span className="panel-icon">🏢</span>
