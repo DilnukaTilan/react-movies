@@ -36,6 +36,7 @@ const App = () => {
   const [detailsErrorMessage, setDetailsErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const [isTrendingLoading, setIsTrendingLoading] = useState(false);
 
   const fetchMovies = useCallback(async (query = "", signal) => {
     setIsLoading(true);
@@ -52,11 +53,12 @@ const App = () => {
       }
 
       const data = await response.json();
+      const results = data.results || [];
 
-      setMovieList(data.results || []);
+      setMovieList(results);
 
-      if (query && data.results.length > 0) {
-        updateSearchCount(query, data.results[0]);
+      if (query && results.length > 0) {
+        updateSearchCount(query, results[0]);
       }
     } catch (error) {
       if (error.name === "AbortError") return;
@@ -67,11 +69,14 @@ const App = () => {
     }
   }, []);
 
-  const fetchTrendingMovies = async () => {
+  const fetchTrendingMovies = useCallback(async (signal) => {
+    setIsTrendingLoading(true);
     setTrendingErrorMessage("");
 
     try {
       const movies = await getTrendingMovies();
+
+      if (signal?.aborted) return;
 
       if (!Array.isArray(movies)) {
         throw new Error("Failed to fetch trending movies.");
@@ -79,13 +84,16 @@ const App = () => {
 
       setTrendingMovies(movies || []);
     } catch (error) {
+      if (error.name === "AbortError") return;
       console.error("Error fetching trending movies:", error);
       setTrendingErrorMessage(
         "Failed to fetch trending movies. Please try again later.",
       );
       setTrendingMovies([]);
+    } finally {
+      setIsTrendingLoading(false);
     }
-  };
+  }, []);
 
   const fetchMovieDetails = useCallback(async (movieId, signal) => {
     setIsDetailsLoading(true);
@@ -167,8 +175,11 @@ const App = () => {
   useEffect(() => {
     if (selectedMovieId) return;
 
-    fetchTrendingMovies();
-  }, [selectedMovieId]);
+    const controller = new AbortController();
+    fetchTrendingMovies(controller.signal);
+
+    return () => controller.abort();
+  }, [selectedMovieId, fetchTrendingMovies]);
 
   return (
     <main>
@@ -217,20 +228,24 @@ const App = () => {
             <section className="trending">
               <h2>Trending Movies</h2>
 
-              {trendingErrorMessage ? (
+              {isTrendingLoading ? (
+                <p className="my-9 text-white">Loading trending movies...</p>
+              ) : trendingErrorMessage ? (
                 <p className="my-9 text-red-500">{trendingErrorMessage}</p>
-              ) : (
-                trendingMovies.length > 0 && (
-                  <ul>
-                    {trendingMovies.map((movie, index) => (
-                      <li key={movie.$id}>
-                        <p>{index + 1}</p>
-                        <img src={movie.poster_url} alt={movie.title} />
-                      </li>
-                    ))}
-                  </ul>
-                )
-              )}
+              ) : trendingMovies.length > 0 ? (
+                <ul>
+                  {trendingMovies.map((movie, index) => (
+                    <li
+                      key={movie.$id}
+                      onClick={() => handleMovieSelect(movie.movie_id)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <p>{index + 1}</p>
+                      <img src={movie.poster_url} alt={movie.title} />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </section>
 
             <section className="all-movies">
