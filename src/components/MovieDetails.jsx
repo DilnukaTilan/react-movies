@@ -53,7 +53,6 @@ const MovieDetails = ({ movie, onBack }) => {
   const poster = movie.poster_path
     ? `${IMAGE_BASE_URL}/w500${movie.poster_path}`
     : "/no-movie.png";
-  const genres = movie.genres?.map((genre) => genre.name).join(", ") || "N/A";
   const productionCompanies =
     movie.production_companies?.map((company) => company.name).join(", ") ||
     "N/A";
@@ -96,24 +95,62 @@ const MovieDetails = ({ movie, onBack }) => {
       </div>
 
       <div className="details-grid">
+        {/* ── Movie Details panel ── */}
         <div className="detail-panel">
-          <h2>Movie Details</h2>
+          <div className="panel-header">
+            <span className="panel-icon">🎬</span>
+            <h2>Movie Details</h2>
+          </div>
+
+          {/* Rating highlight card */}
+          {movie.vote_average > 0 && (
+            <div className="rating-highlight">
+              <span className="rating-star">★</span>
+              <span className="rating-score">
+                {movie.vote_average.toFixed(1)}
+              </span>
+              <span className="rating-max">/ 10</span>
+              {movie.vote_count > 0 && (
+                <span className="rating-votes">
+                  ({movie.vote_count.toLocaleString("en-US")} votes)
+                </span>
+              )}
+            </div>
+          )}
+
           <dl>
-            {detailItems(movie).map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
+            {detailItems(movie)
+              .filter(([label]) => label !== "Rating" && label !== "Votes")
+              .map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
           </dl>
         </div>
 
+        {/* ── Production panel ── */}
         <div className="detail-panel">
-          <h2>Production</h2>
+          <div className="panel-header">
+            <span className="panel-icon">🏢</span>
+            <h2>Production</h2>
+          </div>
+
           <dl>
             <div>
               <dt>Genres</dt>
-              <dd>{genres}</dd>
+              <dd>
+                <div className="detail-pills">
+                  {movie.genres?.length
+                    ? movie.genres.map((g) => (
+                        <span key={g.id} className="detail-pill">
+                          {g.name}
+                        </span>
+                      ))
+                    : "N/A"}
+                </div>
+              </dd>
             </div>
             <div>
               <dt>Production companies</dt>
@@ -127,8 +164,14 @@ const MovieDetails = ({ movie, onBack }) => {
               <dt>Homepage</dt>
               <dd>
                 {movie.homepage ? (
-                  <a href={movie.homepage} target="_blank" rel="noreferrer">
-                    Visit official site
+                  <a
+                    className="homepage-link"
+                    href={movie.homepage}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span>Visit official site</span>
+                    <span className="link-arrow">→</span>
                   </a>
                 ) : (
                   "N/A"
