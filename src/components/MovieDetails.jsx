@@ -59,11 +59,15 @@ const MovieDetails = ({ movie, onBack }) => {
   const countries =
     movie.production_countries?.map((country) => country.name).join(", ") ||
     "N/A";
+  const directors = movie.crew
+    ?.filter((member) => member.job === "Director")
+    .map((d) => d.name);
 
   return (
     <section className="movie-details">
       <button type="button" className="back-button" onClick={onBack}>
-        Back to movies
+        <span className="back-arrow">←</span>
+        <span>Back to Movies</span>
       </button>
 
       <div
@@ -90,9 +94,48 @@ const MovieDetails = ({ movie, onBack }) => {
                 <span>Genre unavailable</span>
               )}
             </div>
+
+            {directors?.length > 0 && (
+              <p className="director">
+                <span className="director-label">Directed by</span>{" "}
+                {directors.join(", ")}
+              </p>
+            )}
           </div>
         </div>
       </div>
+
+      {movie.cast?.length > 0 && (
+        <div className="cast-section">
+          <div className="panel-header">
+            <span className="panel-icon">👥</span>
+            <h2>Top Cast</h2>
+          </div>
+
+          <div className="cast-scroll">
+            {movie.cast
+              .filter((member) => member.profile_path)
+              .slice(0, 12)
+              .map((member) => (
+                <div key={member.credit_id} className="cast-card">
+                  <div className="cast-img-wrapper">
+                    <img
+                      src={`${IMAGE_BASE_URL}/w185${member.profile_path}`}
+                      alt={member.name}
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="cast-name" title={member.name}>
+                    {member.name}
+                  </p>
+                  <p className="cast-character" title={member.character}>
+                    {member.character}
+                  </p>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
 
       <div className="details-grid">
         <div className="detail-panel">
@@ -167,7 +210,7 @@ const MovieDetails = ({ movie, onBack }) => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <span>Visit official site</span>
+                    <span>Visit Official Site</span>
                     <span className="link-arrow">→</span>
                   </a>
                 ) : (

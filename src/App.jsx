@@ -101,16 +101,29 @@ const App = () => {
     setMovieDetails(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/movie/${movieId}`, {
-        ...API_OPTIONS,
-        signal,
-      });
+      const [detailsResponse, creditsResponse] = await Promise.all([
+        fetch(`${API_BASE_URL}/movie/${movieId}`, {
+          ...API_OPTIONS,
+          signal,
+        }),
+        fetch(`${API_BASE_URL}/movie/${movieId}/credits`, {
+          ...API_OPTIONS,
+          signal,
+        }),
+      ]);
 
-      if (!response.ok) {
+      if (!detailsResponse.ok) {
         throw new Error("Failed to fetch movie details!");
       }
 
-      const data = await response.json();
+      const data = await detailsResponse.json();
+
+      if (creditsResponse.ok) {
+        const creditsData = await creditsResponse.json();
+        data.cast = creditsData.cast || [];
+        data.crew = creditsData.crew || [];
+      }
+
       setMovieDetails(data);
     } catch (error) {
       if (error.name === "AbortError") return;

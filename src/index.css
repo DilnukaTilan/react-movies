@@ -150,7 +150,32 @@
   }
 
   .back-button {
-    @apply mb-8 w-fit rounded-lg bg-light-100/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-light-100/20 focus:outline-none focus:ring-2 focus:ring-light-100/50 cursor-pointer;
+    @apply mb-8 w-fit inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold no-underline transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-light-100/50;
+    background: linear-gradient(
+      135deg,
+      rgba(171, 139, 255, 0.15),
+      rgba(206, 206, 251, 0.08)
+    );
+    border: 1px solid rgba(171, 139, 255, 0.2);
+    color: #cecefb;
+  }
+
+  .back-button:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(171, 139, 255, 0.25),
+      rgba(206, 206, 251, 0.14)
+    );
+    border-color: rgba(171, 139, 255, 0.35);
+    color: #fff;
+  }
+
+  .back-arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .back-button:hover .back-arrow {
+    transform: translateX(-3px);
   }
 
   .movie-details {
@@ -200,6 +225,14 @@
 
   .genre-list span {
     @apply rounded-full bg-light-100/10 px-3 py-1 text-sm font-semibold text-light-100;
+  }
+
+  .director {
+    @apply mt-5 text-base font-semibold text-white;
+  }
+
+  .director-label {
+    @apply text-sm font-bold uppercase tracking-[0.15em] text-light-200;
   }
 
   .details-grid {
@@ -346,6 +379,66 @@
 
   .detail-panel a.homepage-link {
     text-decoration: none;
+  }
+
+  .cast-section {
+    @apply mt-8 rounded-2xl bg-dark-100 p-5 shadow-inner shadow-light-100/10 sm:p-6;
+    border: 1px solid rgba(206, 206, 251, 0.06);
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .cast-section:hover {
+    border-color: rgba(206, 206, 251, 0.12);
+    box-shadow:
+      inset 0 1px 1px rgba(206, 206, 251, 0.08),
+      0 0 24px rgba(206, 206, 251, 0.04);
+  }
+
+  .cast-scroll {
+    @apply mt-5 flex gap-4 overflow-x-auto pb-2 hide-scrollbar;
+  }
+
+  .cast-card {
+    @apply flex flex-col items-center text-center;
+    flex: 0 0 120px;
+    transition: transform 0.25s ease;
+  }
+
+  .cast-img-wrapper {
+    @apply relative overflow-hidden rounded-full;
+    width: 75px;
+    height: 75px;
+    border: 2px solid rgba(206, 206, 251, 0.12);
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .cast-card:hover .cast-img-wrapper {
+    border-color: rgba(171, 139, 255, 0.4);
+    box-shadow: 0 0 20px rgba(171, 139, 255, 0.15);
+  }
+
+  .cast-img-wrapper img {
+    @apply h-full w-full object-cover;
+  }
+
+  .cast-name {
+    @apply mt-2.5 text-xs font-bold text-white leading-tight;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cast-character {
+    @apply mt-0.5 text-xs text-gray-100 leading-tight;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
