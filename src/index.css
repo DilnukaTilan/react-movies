@@ -402,15 +402,17 @@
 
   .cast-card {
     @apply flex flex-col items-center text-center;
-    flex: 0 0 120px;
+    flex: 0 0 130px;
     transition: transform 0.25s ease;
   }
 
   .cast-img-wrapper {
-    @apply relative overflow-hidden rounded-full;
-    width: 75px;
-    height: 75px;
+    @apply relative overflow-hidden;
+    width: 120px;
+    height: 160px;
+    border-radius: 14px;
     border: 2px solid rgba(206, 206, 251, 0.12);
+    background: rgba(206, 206, 251, 0.04);
     transition:
       border-color 0.3s ease,
       box-shadow 0.3s ease;
@@ -422,12 +424,13 @@
   }
 
   .cast-img-wrapper img {
-    @apply h-full w-full object-cover;
+    @apply h-full w-full object-contain;
+    object-position: top;
   }
 
   .cast-name {
     @apply mt-2.5 text-xs font-bold text-white leading-tight;
-    max-width: 110px;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -435,7 +438,7 @@
 
   .cast-character {
     @apply mt-0.5 text-xs text-gray-100 leading-tight;
-    max-width: 110px;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
