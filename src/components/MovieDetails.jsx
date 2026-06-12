@@ -63,6 +63,13 @@ const MovieDetails = ({ movie, onBack }) => {
     ?.filter((member) => member.job === "Director")
     .map((d) => d.name);
 
+  const trailer = movie.videos
+    ?.filter((v) => v.site === "YouTube" && v.type === "Trailer")
+    .sort((a, b) => (b.official ? 1 : 0) - (a.official ? 1 : 0))[0];
+  const trailerUrl = trailer
+    ? `https://www.youtube.com/watch?v=${trailer.key}`
+    : null;
+
   return (
     <section className="movie-details">
       <button type="button" className="back-button" onClick={onBack}>
@@ -100,6 +107,18 @@ const MovieDetails = ({ movie, onBack }) => {
                 <span className="director-label">Directed by</span>{" "}
                 {directors.join(", ")}
               </p>
+            )}
+
+            {trailerUrl && (
+              <a
+                className="trailer-link"
+                href={trailerUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="trailer-play-icon">▶</span>
+                <span>Play Trailer</span>
+              </a>
             )}
           </div>
         </div>

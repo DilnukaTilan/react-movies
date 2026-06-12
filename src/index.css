@@ -235,6 +235,48 @@
     @apply text-sm font-bold uppercase tracking-[0.15em] text-light-200;
   }
 
+  .trailer-link {
+    @apply mt-6 inline-flex items-center gap-2.5 rounded-xl px-5 py-3 text-sm font-bold no-underline transition;
+    background: linear-gradient(
+      135deg,
+      rgba(171, 139, 255, 0.2),
+      rgba(206, 206, 251, 0.08)
+    );
+    border: 1px solid rgba(171, 139, 255, 0.25);
+    color: #cecefb;
+    backdrop-filter: blur(8px);
+  }
+
+  .trailer-link:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(171, 139, 255, 0.35),
+      rgba(206, 206, 251, 0.16)
+    );
+    border-color: rgba(171, 139, 255, 0.5);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(171, 139, 255, 0.2);
+  }
+
+  .trailer-play-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(171, 139, 255, 0.25);
+    font-size: 11px;
+    color: #fff;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .trailer-link:hover .trailer-play-icon {
+    background: rgba(171, 139, 255, 0.45);
+    box-shadow: 0 0 12px rgba(171, 139, 255, 0.35);
+  }
+
   .details-grid {
     @apply mt-8 grid gap-5 lg:grid-cols-2;
   }

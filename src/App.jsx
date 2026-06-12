@@ -101,16 +101,21 @@ const App = () => {
     setMovieDetails(null);
 
     try {
-      const [detailsResponse, creditsResponse] = await Promise.all([
-        fetch(`${API_BASE_URL}/movie/${movieId}`, {
-          ...API_OPTIONS,
-          signal,
-        }),
-        fetch(`${API_BASE_URL}/movie/${movieId}/credits`, {
-          ...API_OPTIONS,
-          signal,
-        }),
-      ]);
+      const [detailsResponse, creditsResponse, videosResponse] =
+        await Promise.all([
+          fetch(`${API_BASE_URL}/movie/${movieId}`, {
+            ...API_OPTIONS,
+            signal,
+          }),
+          fetch(`${API_BASE_URL}/movie/${movieId}/credits`, {
+            ...API_OPTIONS,
+            signal,
+          }),
+          fetch(`${API_BASE_URL}/movie/${movieId}/videos`, {
+            ...API_OPTIONS,
+            signal,
+          }),
+        ]);
 
       if (!detailsResponse.ok) {
         throw new Error("Failed to fetch movie details!");
@@ -122,6 +127,11 @@ const App = () => {
         const creditsData = await creditsResponse.json();
         data.cast = creditsData.cast || [];
         data.crew = creditsData.crew || [];
+      }
+
+      if (videosResponse.ok) {
+        const videosData = await videosResponse.json();
+        data.videos = videosData.results || [];
       }
 
       setMovieDetails(data);
