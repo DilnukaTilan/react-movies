@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
@@ -25,7 +25,9 @@ const getMovieIdFromPath = () => {
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [submittedSearchTerm, setSubmittedSearchTerm] = useState("");
+  const [searchSubmissionId, setSearchSubmissionId] = useState(0);
   const [selectedMovieId, setSelectedMovieId] = useState(getMovieIdFromPath);
+  const shouldUpdateSearchCountRef = useRef(false);
 
   const [movieList, setMovieList] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -38,36 +40,39 @@ const App = () => {
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [isTrendingLoading, setIsTrendingLoading] = useState(false);
 
-  const fetchMovies = useCallback(async (query = "", signal) => {
-    setIsLoading(true);
-    setErrorMessage("");
+  const fetchMovies = useCallback(
+    async (query = "", signal, shouldUpdateSearchCount = false) => {
+      setIsLoading(true);
+      setErrorMessage("");
 
-    try {
-      const endpoint = query
-        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
-      const response = await fetch(endpoint, { ...API_OPTIONS, signal });
+      try {
+        const endpoint = query
+          ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+          : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+        const response = await fetch(endpoint, { ...API_OPTIONS, signal });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch movies!");
+        if (!response.ok) {
+          throw new Error("Failed to fetch movies!");
+        }
+
+        const data = await response.json();
+        const results = data.results || [];
+
+        setMovieList(results);
+
+        if (shouldUpdateSearchCount && query && results.length > 0) {
+          updateSearchCount(query, results[0]);
+        }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        console.error("Error fetching movies:", error);
+        setErrorMessage("Failed to fetch movies. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
-
-      const data = await response.json();
-      const results = data.results || [];
-
-      setMovieList(results);
-
-      if (query && results.length > 0) {
-        updateSearchCount(query, results[0]);
-      }
-    } catch (error) {
-      if (error.name === "AbortError") return;
-      console.error("Error fetching movies:", error);
-      setErrorMessage("Failed to fetch movies. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [],
+  );
 
   const fetchTrendingMovies = useCallback(async (signal) => {
     setIsTrendingLoading(true);
@@ -157,10 +162,13 @@ const App = () => {
   };
 
   const handleSearchSubmit = () => {
+    shouldUpdateSearchCountRef.current = true;
     setSubmittedSearchTerm(searchTerm.trim());
+    setSearchSubmissionId((currentId) => currentId + 1);
   };
 
   const handleSearchClear = () => {
+    shouldUpdateSearchCountRef.current = false;
     setSearchTerm("");
     setSubmittedSearchTerm("");
   };
@@ -177,10 +185,16 @@ const App = () => {
     if (selectedMovieId) return;
 
     const controller = new AbortController();
-    fetchMovies(submittedSearchTerm, controller.signal);
+    const shouldUpdateSearchCount = shouldUpdateSearchCountRef.current;
+    shouldUpdateSearchCountRef.current = false;
+    fetchMovies(
+      submittedSearchTerm,
+      controller.signal,
+      shouldUpdateSearchCount,
+    );
 
     return () => controller.abort();
-  }, [submittedSearchTerm, fetchMovies, selectedMovieId]);
+  }, [submittedSearchTerm, searchSubmissionId, fetchMovies, selectedMovieId]);
 
   useEffect(() => {
     if (!selectedMovieId) {
