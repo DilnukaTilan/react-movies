@@ -269,7 +269,9 @@
     background: rgba(171, 139, 255, 0.25);
     font-size: 11px;
     color: #fff;
-    transition: background 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      background 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .trailer-link:hover .trailer-play-icon {
@@ -439,7 +441,41 @@
   }
 
   .cast-scroll {
-    @apply mt-5 flex gap-4 overflow-x-auto pb-2 hide-scrollbar;
+    @apply mt-5 flex gap-4 overflow-x-auto pb-2;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+  }
+
+  .cast-scroll:hover {
+    scrollbar-color: rgba(171, 139, 255, 0.45) rgba(206, 206, 251, 0.08);
+  }
+
+  .cast-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .cast-scroll::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  .cast-scroll::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+  }
+
+  .cast-scroll:hover::-webkit-scrollbar-track {
+    background: rgba(206, 206, 251, 0.08);
+  }
+
+  .cast-scroll:hover::-webkit-scrollbar-thumb {
+    background: rgba(171, 139, 255, 0.45);
+  }
+
+  .cast-scroll:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(171, 139, 255, 0.7);
   }
 
   .cast-card {
